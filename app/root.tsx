@@ -11,7 +11,7 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from '@remix-run/react';
-import styles from '../styles/generated-do-not-edit.css';
+import styles from '~/styles/generated-do-not-edit.css';
 
 export const meta: MetaFunction = () => ({
 	charset: 'utf-8',

@@ -1,5 +1,5 @@
-[env.dev]
 [[ d1_databases ]]
 binding = "DB"
-database_name = "airish-tunes-dev"
-database_id = "ec579f84-326f-443a-b66a-8ca8b9e75d71"
+database_name = "airish-tunes"
+database_id = "88d892f9-027d-4495-b256-8a40fdeef118"
+preview_database_id = "ec579f84-326f-443a-b66a-8ca8b9e75d71"
