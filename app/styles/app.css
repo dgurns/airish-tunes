@@ -11,6 +11,10 @@
 		@apply text-4xl font-bold;
 	}
 
+	h2 {
+		@apply text-2xl;
+	}
+
 	button,
 	button[type="submit"] {
 		@apply bg-orange-700 hover:bg-orange-800 rounded py-2 px-4;
