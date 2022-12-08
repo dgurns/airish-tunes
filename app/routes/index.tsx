@@ -56,7 +56,7 @@ export default function Index() {
 					<h2>{tuneImage?.tune_name ?? 'Generating...'}</h2>
 				</div>
 
-				<div className="flex w-full aspect-square bg-black items-center justify-center rounded-xl">
+				<div className="flex w-full aspect-square bg-black items-center justify-center rounded-xl overflow-hidden">
 					{!base64Data ? (
 						<div className="flex flex-row items-center">
 							<div className="animate-spin">↻</div>
@@ -74,9 +74,7 @@ export default function Index() {
 
 				<div className="flex flex-col text-sm space-y-1 text-gray-500 items-center">
 					<p>
-						Made by <a href="https://dangurney.net">Dan Gurney</a>
-					</p>
-					<p>
+						Made by <a href="https://dangurney.net">Dan Gurney</a> •{' '}
 						<a href="https://github.com/dgurns/airish-tunes">Source Code</a>
 					</p>
 					<p>
