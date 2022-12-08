@@ -3,9 +3,9 @@ import { D1Dialect } from 'kysely-d1';
 
 interface TuneImagesTable {
 	id: Generated<number>;
-	date: string;
+	days_into_year: number;
 	tune_name: string;
-	the_session_tune_id: string;
+	the_session_tune_id: number;
 	r2_key: string | null;
 	created_at: ColumnType<Date, never, never>;
 	updated_at: ColumnType<Date, never, Date>;

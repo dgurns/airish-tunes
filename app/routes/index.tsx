@@ -1,5 +1,6 @@
 import { json } from '@remix-run/cloudflare';
-import { useLoaderData } from '@remix-run/react';
+import { useFetcher, useLoaderData } from '@remix-run/react';
+import { useEffect } from 'react';
 import { createDBClient } from '~/db.server';
 import type { LoaderArgs } from '~/types';
 
@@ -16,6 +17,18 @@ export async function loader({ context }: LoaderArgs) {
 
 export default function Index() {
 	const { tuneImage } = useLoaderData<typeof loader>();
+	const fetcher = useFetcher();
+
+	// TODO: improve how/when the generation request gets sent
+	useEffect(() => {
+		if (!tuneImage) {
+			fetcher.submit(null, {
+				method: 'post',
+				action: '/tune-images/create-for-today',
+			});
+		}
+	}, []);
+
 	return (
 		<div className="flex w-full flex-col items-center">
 			<div className="flex w-full flex-col items-center lg:max-w-lg space-y-8 py-8 px-4">
@@ -58,6 +71,9 @@ export default function Index() {
 					</p>
 					<p>
 						Tunes from <a href="https://thesession.org">The Session API</a>
+					</p>
+					<p>
+						"AI-rish" pun by <a href="https://chat.openai.com">ChatGPT</a>
 					</p>
 				</div>
 			</div>

@@ -11,6 +11,7 @@ export default global;
 
 export type Context = {
 	DB: D1Database;
+	OPENAI_API_KEY: string;
 };
 
 export type LoaderArgs = RemixLoaderArgs & {
