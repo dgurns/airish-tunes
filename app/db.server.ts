@@ -6,7 +6,7 @@ interface TuneImagesTable {
 	days_into_year: number;
 	tune_name: string;
 	the_session_tune_id: number;
-	r2_key: string | null;
+	r2_key: string;
 	created_at: ColumnType<Date, never, never>;
 	updated_at: ColumnType<Date, never, Date>;
 }

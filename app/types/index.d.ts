@@ -5,12 +5,14 @@ import {
 
 declare global {
 	const DB: D1Database;
+	const R2: R2Bucket;
 }
 
 export default global;
 
 export type Context = {
 	DB: D1Database;
+	R2: R2Bucket;
 	OPENAI_API_KEY: string;
 };
 
