@@ -3,14 +3,15 @@ import { useFetcher, useLoaderData } from '@remix-run/react';
 import { useEffect } from 'react';
 import { createDBClient } from '~/db.server';
 import type { LoaderArgs } from '~/types';
+import { daysIntoYear } from '~/utils';
 
 export async function loader({ context }: LoaderArgs) {
 	const db = createDBClient(context.DB);
-	const today = new Date().toISOString().split('T')[0];
+	// get today's tune image
 	const tuneImage = await db
 		.selectFrom('tune_images')
 		.selectAll()
-		.where('date', '=', today)
+		.where('days_into_year', '=', daysIntoYear(new Date()))
 		.executeTakeFirst();
 	return json({ tuneImage }, { status: 200 });
 }

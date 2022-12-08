@@ -2,18 +2,6 @@ import { json } from '@remix-run/cloudflare';
 import { createDBClient } from '~/db.server';
 import { type ActionArgs } from '~/types';
 
-// Jan 1 returns 1, Dec 31 returns 365
-function daysIntoYear(date: Date) {
-	return (
-		(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
-			Date.UTC(date.getFullYear(), 0, 0)) /
-		24 /
-		60 /
-		60 /
-		1000
-	);
-}
-
 export async function action({ request, context }: ActionArgs) {
 	const db = createDBClient(context.DB);
 
