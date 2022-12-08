@@ -15,19 +15,8 @@ interface Database {
 	tune_images: TuneImagesTable;
 }
 
-declare global {
-	var __db: Kysely<Database> | undefined;
-}
-
 export function createDBClient(d1Binding: D1Database) {
-	if (globalThis.__db) {
-		return globalThis.__db;
-	}
-
-	const db = new Kysely<Database>({
+	return new Kysely<Database>({
 		dialect: new D1Dialect({ database: d1Binding }),
 	});
-
-	globalThis.__db = db;
-	return db;
 }
