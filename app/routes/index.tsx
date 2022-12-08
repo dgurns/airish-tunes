@@ -44,7 +44,7 @@ export default function Index() {
 			<div className="flex w-full flex-col items-center lg:max-w-lg space-y-8 py-8 px-4">
 				<div className="flex flex-col items-center text-center">
 					<h1>AI-rish Tunes</h1>
-					<span className="text-gray-500">
+					<span className="text-gray-400">
 						Every day I pick a random Irish tune and ask an AI to illustrate it.
 					</span>
 				</div>
@@ -72,7 +72,7 @@ export default function Index() {
 					)}
 				</div>
 
-				<div className="flex flex-col text-sm space-y-1 text-gray-500 items-center">
+				<div className="flex flex-col text-sm space-y-1 text-gray-400 items-center">
 					<p>
 						Made by <a href="https://dangurney.net">Dan Gurney</a> •{' '}
 						<a href="https://github.com/dgurns/airish-tunes">Source Code</a>
