@@ -3,9 +3,13 @@ import { createDBClient } from '~/db.server';
 import { type ActionArgs } from '~/types';
 import { getDaysIntoYear } from '~/utils';
 
-export async function action({ context }: ActionArgs) {
+export async function action({ context, request }: ActionArgs) {
 	const db = createDBClient(context.DB);
-	const daysIntoYear = getDaysIntoYear(new Date());
+	const formData = await request.formData();
+	const todayAsDaysIntoYear = getDaysIntoYear(new Date());
+	const daysIntoYear = Number(
+		formData.get('daysIntoYear') ?? todayAsDaysIntoYear
+	);
 
 	// check if we already made a tune image for that day
 	const existing = await db
@@ -57,6 +61,16 @@ export async function action({ context }: ActionArgs) {
 		throw new Error('No data received from image generation API');
 	}
 	const imageBase64 = imageResJSON.data[0].b64_json;
+
+	// check again to see if it has been created while this was in progress
+	const existingDoubleCheck = await db
+		.selectFrom('tune_images')
+		.selectAll()
+		.where('days_into_year', '=', daysIntoYear)
+		.executeTakeFirst();
+	if (existingDoubleCheck) {
+		return json({ tuneImage: existingDoubleCheck }, { status: 200 });
+	}
 
 	// save to R2
 	const r2Res = await context.R2.put(String(tune.id), imageBase64);

@@ -4,6 +4,7 @@ import type {
 	MetaFunction,
 } from '@remix-run/cloudflare';
 import {
+	Link,
 	Links,
 	LiveReload,
 	Meta,
@@ -48,7 +49,33 @@ export default function App() {
 				<Links />
 			</head>
 			<body>
-				<Outlet />
+				<div className="flex w-full flex-col items-center">
+					<div className="flex w-full flex-col items-center lg:max-w-lg space-y-8 py-8 px-4">
+						<div className="flex flex-col items-center text-center">
+							<h1>AI-rish Tunes</h1>
+							<span className="text-gray-400">
+								Every day I pick a random Irish tune and ask an AI to illustrate
+								it.
+							</span>
+						</div>
+
+						<Outlet />
+
+						<p className="text-sm text-gray-400">
+							Made by{' '}
+							<a href="https://dangurney.net" className="text-gray-400">
+								Dan Gurney
+							</a>{' '}
+							•{' '}
+							<a
+								href="https://github.com/dgurns/airish-tunes"
+								className="text-gray-400"
+							>
+								Source Code
+							</a>
+						</p>
+					</div>
+				</div>
 				<ScrollRestoration />
 				<Scripts />
 				<LiveReload />
@@ -68,8 +95,8 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
 				<div className="flex flex-col items-center justify-start w-full h-screen">
 					<div className="flex w-full md:max-w-md h-screen md:h-auto flex-col items-center text-center justify-start py-8 px-4">
 						Oops! There was an error:
-						<span className="text-red-500">{error.message}</span>
-						Please reload the page.
+						<span className="text-red-500 mb-6">{error.message}</span>
+						<Link to="/">Go to homepage</Link>
 					</div>
 				</div>
 				<ScrollRestoration />
@@ -92,10 +119,10 @@ export const CatchBoundary: CatchBoundaryComponent = () => {
 				<div className="flex flex-col items-center justify-start w-full h-screen">
 					<div className="flex w-full md:max-w-md h-screen md:h-auto flex-col items-center text-center justify-start py-8 px-4">
 						Oops! There was an error:
-						<span className="text-red-500">
+						<span className="text-red-500 mb-6">
 							{caught.status} - {caught.statusText}
 						</span>
-						Please reload the page.
+						<Link to="/">Go to homepage</Link>
 					</div>
 				</div>
 				<ScrollRestoration />

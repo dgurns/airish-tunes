@@ -21,7 +21,7 @@
 	}
 
 	a {
-		@apply underline;
+		@apply underline text-blue-200;
 	}
 }
 
