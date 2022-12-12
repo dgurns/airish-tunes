@@ -1,8 +1,8 @@
 import { json, redirect } from '@remix-run/cloudflare';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { createDBClient } from '~/db.server';
 import type { LoaderArgs } from '~/types';
-import { daysIntoYearAsReadableDate } from '~/utils';
+import { getDaysIntoYear } from '~/utils';
 
 export async function loader({ context, params }: LoaderArgs) {
 	if (!params.id) {
@@ -36,13 +36,17 @@ export default function TuneImageByID() {
 		return null;
 	}
 
+	const isToday = tuneImage.days_into_year === getDaysIntoYear(new Date());
+
 	return (
 		<>
-			<div className="flex flex-row items-center space-x-4">
-				<div className="px-1 py-0.5 text-sm uppercase bg-green-800 text-gray-300 rounded -rotate-12">
-					{daysIntoYearAsReadableDate(tuneImage.days_into_year)}
-				</div>
-				<h2>{tuneImage.tune_name}</h2>
+			<div className="flex flex-row items-center justify-center space-x-4 w-full">
+				{isToday && (
+					<div className="px-1 py-0.5 text-sm uppercase bg-green-800 text-gray-300 rounded -rotate-12">
+						Today
+					</div>
+				)}
+				<h2>{tuneImage?.tune_name ?? 'Generating...'}</h2>
 			</div>
 
 			<div className="flex w-full aspect-square bg-black items-center justify-center rounded-xl overflow-hidden">
@@ -54,7 +58,7 @@ export default function TuneImageByID() {
 				/>
 			</div>
 
-			<div className="pt-2">
+			<div className="pt-2 flex flex-col space-y-3 items-center">
 				<a
 					href={`https://thesession.org/tunes/${tuneImage.the_session_tune_id}`}
 					target="_blank"
@@ -62,6 +66,7 @@ export default function TuneImageByID() {
 				>
 					View this tune on The Session ↗
 				</a>
+				<Link to="/tune-images">Past Days</Link>
 			</div>
 		</>
 	);

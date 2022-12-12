@@ -1,5 +1,5 @@
 import { json } from '@remix-run/cloudflare';
-import { useFetcher, useLoaderData } from '@remix-run/react';
+import { Link, useFetcher, useLoaderData } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import { createDBClient } from '~/db.server';
 import type { LoaderArgs } from '~/types';
@@ -41,7 +41,7 @@ export default function Index() {
 
 	return (
 		<>
-			<div className="flex flex-row items-center space-x-4">
+			<div className="flex flex-row items-center justify-center space-x-4 w-full">
 				<div className="px-1 py-0.5 text-sm uppercase bg-green-800 text-gray-300 rounded -rotate-12">
 					Today
 				</div>
@@ -65,7 +65,7 @@ export default function Index() {
 			</div>
 
 			{tuneImage && (
-				<div className="pt-2">
+				<div className="pt-2 flex flex-col space-y-3 items-center">
 					<a
 						href={`https://thesession.org/tunes/${tuneImage.the_session_tune_id}`}
 						target="_blank"
@@ -73,6 +73,7 @@ export default function Index() {
 					>
 						View this tune on The Session ↗
 					</a>
+					<Link to="/tune-images">Past Days</Link>
 				</div>
 			)}
 		</>

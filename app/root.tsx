@@ -52,7 +52,12 @@ export default function App() {
 				<div className="flex w-full flex-col items-center">
 					<div className="flex w-full flex-col items-center lg:max-w-lg space-y-8 py-8 px-4">
 						<div className="flex flex-col items-center text-center">
-							<h1>AI-rish Tunes</h1>
+							<Link
+								to="/"
+								className="text-gray-50 hover:text-blue-200 no-underline"
+							>
+								<h1>AI-rish Tunes</h1>
+							</Link>
 							<span className="text-gray-400">
 								Every day I pick a random Irish tune and ask an AI to illustrate
 								it.

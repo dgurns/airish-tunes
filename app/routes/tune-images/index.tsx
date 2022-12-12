@@ -22,15 +22,12 @@ export default function TuneImagesIndex() {
 	}
 
 	return (
-		<>
-			<h2>Past Tune Images</h2>
-			<ul className="flex flex-col items-start list-none w-full space-y-1">
-				{tuneImages.map((t) => (
-					<li key={t.id}>
-						<a href={`/tune-images/${t.id}`}>{t.tune_name}</a>
-					</li>
-				))}
-			</ul>
-		</>
+		<ul className="flex flex-col items-start list-none w-full space-y-1">
+			{tuneImages.map((t) => (
+				<li key={t.id}>
+					<a href={`/tune-images/${t.id}`}>{t.tune_name}</a>
+				</li>
+			))}
+		</ul>
 	);
 }
