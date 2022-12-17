@@ -71,7 +71,7 @@ export default function Index() {
 						target="_blank"
 						rel="noreferrer"
 					>
-						View this tune on The Session ↗
+						View This Tune on The Session ↗
 					</a>
 					<Link to="/tune-images">Past Days</Link>
 				</div>
