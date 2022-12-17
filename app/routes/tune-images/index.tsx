@@ -9,6 +9,7 @@ export async function loader({ context }: LoaderArgs) {
 	const tuneImages = await db
 		.selectFrom('tune_images')
 		.selectAll()
+		.distinctOn('tune_name')
 		.orderBy('days_into_year', 'desc')
 		.execute();
 	return json({ tuneImages }, { status: 200 });
