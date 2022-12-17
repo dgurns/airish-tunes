@@ -64,7 +64,7 @@ export default function TuneImageByID() {
 					target="_blank"
 					rel="noreferrer"
 				>
-					View this tune on The Session ↗
+					View on The Session ↗
 				</a>
 				<Link to="/tune-images">Past Days</Link>
 			</div>
