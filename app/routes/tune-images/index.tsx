@@ -6,21 +6,13 @@ import type { LoaderArgs } from '~/types';
 export async function loader({ context }: LoaderArgs) {
 	// get all tune images
 	const db = createDBClient(context.DB);
-	const allTuneImages = await db
+	const tuneImages = await db
 		.selectFrom('tune_images')
 		.selectAll()
+		.groupBy('tune_name')
 		.orderBy('days_into_year', 'desc')
 		.execute();
-	// filter out duplicate tune names
-	const tuneNames: Record<string, true> = {};
-	const filteredTuneImages: typeof allTuneImages = [];
-	for (const t of allTuneImages) {
-		if (!tuneNames[t.tune_name]) {
-			filteredTuneImages.push(t);
-		}
-		tuneNames[t.tune_name] = true;
-	}
-	return json({ tuneImages: filteredTuneImages }, { status: 200 });
+	return json({ tuneImages }, { status: 200 });
 }
 
 export default function TuneImagesIndex() {

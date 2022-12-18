@@ -14,6 +14,7 @@ export type Context = {
 	DB: D1Database;
 	R2: R2Bucket;
 	OPENAI_API_KEY: string;
+	R2_PUBLIC_BASE_URL: string;
 };
 
 export type LoaderArgs = RemixLoaderArgs & {

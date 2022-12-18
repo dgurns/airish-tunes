@@ -20,17 +20,23 @@ export async function loader({ context, params }: LoaderArgs) {
 		throw new Error('Tune image not found');
 	}
 
-	// get the base64 image data
-	let base64Data: string | undefined;
+	// if running against a public R2 bucket, use the public URL as src,
+	// otherwise fetch the raw base64 image data
+	let imageSrc: string | undefined;
 	if (tuneImage) {
-		const r2Res = await context.R2.get(tuneImage.r2_key);
-		base64Data = await r2Res?.text();
+		if (context.R2_PUBLIC_BASE_URL) {
+			imageSrc = `${context.R2_PUBLIC_BASE_URL}/${tuneImage?.the_session_tune_id}`;
+		} else {
+			const r2Res = await context.R2.get(tuneImage.r2_key);
+			const base64Data = await r2Res?.text();
+			imageSrc = `data:image/png;base64,${base64Data}`;
+		}
 	}
-	return json({ tuneImage, base64Data }, { status: 200 });
+	return json({ tuneImage, imageSrc }, { status: 200 });
 }
 
 export default function TuneImageByID() {
-	const { tuneImage, base64Data } = useLoaderData<typeof loader>();
+	const { tuneImage, imageSrc } = useLoaderData<typeof loader>();
 
 	if (!tuneImage) {
 		return null;
@@ -50,12 +56,7 @@ export default function TuneImageByID() {
 			</div>
 
 			<div className="flex w-full aspect-square bg-black items-center justify-center rounded-xl overflow-hidden">
-				<img
-					src={`data:image/png;base64,${base64Data}`}
-					alt="Tune"
-					width="100%"
-					height="100%"
-				/>
+				<img src={imageSrc} alt="Tune" width="100%" height="100%" />
 			</div>
 
 			<div className="pt-2 flex flex-col space-y-3 items-center">

@@ -14,17 +14,23 @@ export async function loader({ context }: LoaderArgs) {
 		.where('days_into_year', '=', getDaysIntoYear(new Date()))
 		.executeTakeFirst();
 
-	// get the base64 image data
-	let base64Data: string | undefined;
+	// if running against a public R2 bucket, use the public URL as src,
+	// otherwise fetch the raw base64 image data
+	let imageSrc: string | undefined;
 	if (tuneImage) {
-		const r2Res = await context.R2.get(tuneImage.r2_key);
-		base64Data = await r2Res?.text();
+		if (context.R2_PUBLIC_BASE_URL) {
+			imageSrc = `${context.R2_PUBLIC_BASE_URL}/${tuneImage?.the_session_tune_id}`;
+		} else {
+			const r2Res = await context.R2.get(tuneImage.r2_key);
+			const base64Data = await r2Res?.text();
+			imageSrc = `data:image/png;base64,${base64Data}`;
+		}
 	}
-	return json({ tuneImage, base64Data }, { status: 200 });
+	return json({ tuneImage, imageSrc }, { status: 200 });
 }
 
 export default function Index() {
-	const { tuneImage, base64Data } = useLoaderData<typeof loader>();
+	const { tuneImage, imageSrc } = useLoaderData<typeof loader>();
 	const fetcher = useFetcher();
 
 	// if there isn't yet a tune image for today, generate one
@@ -49,18 +55,13 @@ export default function Index() {
 			</div>
 
 			<div className="flex w-full aspect-square bg-black items-center justify-center rounded-xl overflow-hidden">
-				{!base64Data ? (
+				{!imageSrc ? (
 					<div className="flex flex-row items-center">
 						<div className="animate-spin">↻</div>
 						<span className="ml-2">Generating...</span>
 					</div>
 				) : (
-					<img
-						src={`data:image/png;base64,${base64Data}`}
-						alt="Tune"
-						width="100%"
-						height="100%"
-					/>
+					<img src={imageSrc} alt="Tune" width="100%" height="100%" />
 				)}
 			</div>
 
