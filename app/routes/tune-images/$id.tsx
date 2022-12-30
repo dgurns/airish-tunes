@@ -4,6 +4,13 @@ import { createDBClient } from '~/db.server';
 import type { LoaderArgs } from '~/types';
 import { getDaysIntoYear } from '~/utils';
 
+export function headers() {
+	return {
+		// cache for 1 year as each tune image won't change after it's generated
+		'Cache-Control': 'public, max-age=31536000, s-maxage=31536000',
+	};
+}
+
 export async function loader({ context, params }: LoaderArgs) {
 	if (!params.id) {
 		return redirect('/');
