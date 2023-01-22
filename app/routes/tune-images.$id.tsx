@@ -1,5 +1,6 @@
-import { json, redirect } from '@remix-run/cloudflare';
-import { Link, useLoaderData } from '@remix-run/react';
+import { defer } from '@remix-run/cloudflare';
+import { Link, useLoaderData, Await } from '@remix-run/react';
+import { Suspense } from 'react';
 import { createDBClient } from '~/db.server';
 import type { LoaderArgs } from '~/types';
 import { getDaysIntoYear } from '~/utils';
@@ -12,9 +13,6 @@ export function headers() {
 }
 
 export async function loader({ context, params }: LoaderArgs) {
-	if (!params.id) {
-		return redirect('/');
-	}
 	// get the tune image
 	const db = createDBClient(context.DB);
 	const tuneImage = await db
@@ -28,20 +26,20 @@ export async function loader({ context, params }: LoaderArgs) {
 	}
 
 	// get the base64 image data
-	let base64Data: string | undefined;
+	let base64DataPromise: Promise<string> | undefined;
 	if (tuneImage) {
-		const r2Res = await context.R2.get(tuneImage.r2_key);
-		base64Data = await r2Res?.text();
+		base64DataPromise = context.R2.get(tuneImage.r2_key).then((res) => {
+			if (!res) {
+				throw new Error('Could not fetch image data');
+			}
+			return res.text();
+		});
 	}
-	return json({ tuneImage, base64Data }, { status: 200 });
+	return defer({ tuneImage, base64DataPromise }, { status: 200 });
 }
 
 export default function TuneImageByID() {
-	const { tuneImage, base64Data } = useLoaderData<typeof loader>();
-
-	if (!tuneImage) {
-		return null;
-	}
+	const { tuneImage, base64DataPromise } = useLoaderData<typeof loader>();
 
 	const isToday = tuneImage.days_into_year === getDaysIntoYear(new Date());
 
@@ -53,16 +51,22 @@ export default function TuneImageByID() {
 						Today
 					</div>
 				)}
-				<h2>{tuneImage?.tune_name ?? 'Generating...'}</h2>
+				<h2>{tuneImage.tune_name ?? 'Generating...'}</h2>
 			</div>
 
 			<div className="flex w-full aspect-square bg-black items-center justify-center rounded-xl overflow-hidden">
-				<img
-					src={`data:image/png;base64,${base64Data}`}
-					alt="Tune"
-					width="100%"
-					height="100%"
-				/>
+				<Suspense fallback={<div className="w-full h-full bg-gray-800" />}>
+					<Await resolve={base64DataPromise}>
+						{(base64Data) => (
+							<img
+								src={`data:image/png;base64,${base64Data}`}
+								alt="Tune"
+								width="100%"
+								height="100%"
+							/>
+						)}
+					</Await>
+				</Suspense>
 			</div>
 
 			<div className="pt-2 flex flex-col space-y-3 items-center">
