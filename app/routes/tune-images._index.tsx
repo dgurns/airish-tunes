@@ -25,9 +25,11 @@ export async function loader({ context }: LoaderArgs) {
 export default function TuneImagesIndex() {
 	const { tuneImages } = useLoaderData<typeof loader>();
 
-	return tuneImages.length === 0 ? (
-		<p className="text-gray-400">No images generated yet</p>
-	) : (
+	if (tuneImages.length === 0) {
+		return <p className="text-gray-400">No images generated yet</p>;
+	}
+
+	return (
 		<ul className="flex flex-col items-start list-none w-full space-y-1">
 			{tuneImages.map((t) => (
 				<li key={t.id}>
