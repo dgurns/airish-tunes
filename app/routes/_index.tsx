@@ -1,6 +1,6 @@
-import { json } from '@remix-run/cloudflare';
-import { Link, useFetcher, useLoaderData } from '@remix-run/react';
-import { useEffect, useState } from 'react';
+import { defer } from '@remix-run/cloudflare';
+import { Link, useFetcher, useLoaderData, Await } from '@remix-run/react';
+import { useEffect, useState, Suspense } from 'react';
 import { createDBClient } from '~/db.server';
 import type { LoaderArgs } from '~/types';
 import { getDaysIntoYear } from '~/utils';
@@ -15,16 +15,20 @@ export async function loader({ context }: LoaderArgs) {
 		.executeTakeFirst();
 
 	// get the base64 image data
-	let base64Data: string | undefined;
+	let base64DataPromise: Promise<string> | undefined;
 	if (tuneImage) {
-		const r2Res = await context.R2.get(tuneImage.r2_key);
-		base64Data = await r2Res?.text();
+		base64DataPromise = context.R2.get(tuneImage.r2_key).then((res) => {
+			if (!res) {
+				throw new Error('Could not fetch image data');
+			}
+			return res.text();
+		});
 	}
-	return json({ tuneImage, base64Data }, { status: 200 });
+	return defer({ tuneImage, base64DataPromise }, { status: 200 });
 }
 
 export default function Index() {
-	const { tuneImage, base64Data } = useLoaderData<typeof loader>();
+	const { tuneImage, base64DataPromise } = useLoaderData<typeof loader>();
 	const fetcher = useFetcher();
 
 	// if there isn't yet a tune image for today, generate one
@@ -48,20 +52,28 @@ export default function Index() {
 				<h2>{tuneImage?.tune_name ?? 'Generating...'}</h2>
 			</div>
 
-			<div className="flex w-full aspect-square bg-black items-center justify-center rounded-xl overflow-hidden">
-				{!base64Data ? (
-					<div className="flex flex-row items-center">
-						<div className="animate-spin">↻</div>
-						<span className="ml-2">Generating...</span>
-					</div>
-				) : (
-					<img
-						src={`data:image/png;base64,${base64Data}`}
-						alt="Tune"
-						width="100%"
-						height="100%"
-					/>
-				)}
+			<div className="flex w-full aspect-square bg-gray-800 items-center justify-center rounded-xl overflow-hidden">
+				<Suspense
+					fallback={
+						!tuneImage ? (
+							<div className="flex flex-row items-center">
+								<div className="animate-spin">↻</div>
+								<span className="ml-2">Generating...</span>
+							</div>
+						) : null
+					}
+				>
+					<Await resolve={base64DataPromise}>
+						{(base64Data) => (
+							<img
+								src={`data:image/png;base64,${base64Data}`}
+								alt="Tune"
+								width="100%"
+								height="100%"
+							/>
+						)}
+					</Await>
+				</Suspense>
 			</div>
 
 			{tuneImage && (

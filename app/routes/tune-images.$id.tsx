@@ -54,8 +54,8 @@ export default function TuneImageByID() {
 				<h2>{tuneImage.tune_name ?? 'Generating...'}</h2>
 			</div>
 
-			<div className="flex w-full aspect-square bg-black items-center justify-center rounded-xl overflow-hidden">
-				<Suspense fallback={<div className="w-full h-full bg-gray-800" />}>
+			<div className="flex w-full aspect-square bg-gray-800 items-center justify-center rounded-xl overflow-hidden">
+				<Suspense>
 					<Await resolve={base64DataPromise}>
 						{(base64Data) => (
 							<img
