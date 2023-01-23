@@ -1,32 +1,21 @@
-import { type EntryContext } from '@remix-run/cloudflare';
+import type { EntryContext } from '@remix-run/cloudflare';
 import { RemixServer } from '@remix-run/react';
-import isbot from 'isbot';
-import { renderToReadableStream } from 'react-dom/server';
+import { renderToString } from 'react-dom/server';
 
-export default async function handleRequest(
+export default function handleRequest(
 	request: Request,
 	responseStatusCode: number,
 	responseHeaders: Headers,
 	remixContext: EntryContext
 ) {
-	const body = await renderToReadableStream(
-		<RemixServer context={remixContext} url={request.url} />,
-		{
-			onError(error) {
-				console.error('renderToReadableStream error');
-				console.error(error);
-				responseStatusCode = 500;
-			},
-		}
+	const markup = renderToString(
+		<RemixServer context={remixContext} url={request.url} />
 	);
 
-	if (isbot(request.headers.get('user-agent'))) {
-		await body.allReady;
-	}
-
 	responseHeaders.set('Content-Type', 'text/html');
-	return new Response(body, {
-		headers: responseHeaders,
+
+	return new Response('<!DOCTYPE html>' + markup, {
 		status: responseStatusCode,
+		headers: responseHeaders,
 	});
 }
