@@ -17,7 +17,7 @@ export async function loader({ context }: LoaderArgs) {
 		.selectFrom('tune_images')
 		.selectAll()
 		.groupBy('tune_name')
-		.orderBy('days_into_year', 'desc')
+		.orderBy('tune_name', 'asc')
 		.execute();
 	return json({ tuneImages }, { status: 200 });
 }
