@@ -6,9 +6,9 @@
     "dev:css": "npx tailwindcss -w -i ./app/styles/app.css -o ./app/styles/generated-do-not-edit.css",
     "dev:remix": "remix watch",
     "dev:wrangler": "cross-env NODE_ENV=development wrangler pages dev ./public --binding $(cat .env) --port 3000 --local --persist --compatibility-date=2022-12-08",
-    "build": "yarn build:css && remix build",
-    "dev": "yarn build && run-p dev:*",
-    "start": "cross-env NODE_ENV=production yarn dev:wrangler"
+    "build": "npm run build:css && remix build",
+    "dev": "npm run build && run-p dev:*",
+    "start": "cross-env NODE_ENV=production npm run dev:wrangler"
   },
   "dependencies": {
     "@remix-run/cloudflare": "1.11.1",
