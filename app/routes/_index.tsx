@@ -74,6 +74,7 @@ export default function Index() {
 						View this tune on The Session ↗
 					</a>
 					<Link to="/tune-images">Past days</Link>
+					<Link to="/guess">Guess the tune</Link>
 				</div>
 			)}
 		</>
